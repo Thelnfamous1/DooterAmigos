@@ -1,0 +1,13 @@
+{
+  "itemGroup.dooteramigos": "Example Mod Tab",
+  "block.dooteramigos.example_block": "Example Block",
+  "item.dooteramigos.example_item": "Example Item",
+
+  "dooteramigos.configuration.title": "Dooter Amigos Configs",
+  "dooteramigos.configuration.section.dooteramigos.common.toml": "Dooter Amigos Configs",
+  "dooteramigos.configuration.section.dooteramigos.common.toml.title": "Dooter Amigos Configs",
+  "dooteramigos.configuration.items": "Item List",
+  "dooteramigos.configuration.logDirtBlock": "Log Dirt Block",
+  "dooteramigos.configuration.magicNumberIntroduction": "Magic Number Text",
+  "dooteramigos.configuration.magicNumber": "Magic Number"
+}

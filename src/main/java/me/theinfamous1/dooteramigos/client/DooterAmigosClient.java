@@ -1,12 +1,16 @@
-package me.theinfamous1.dooteramigos;
+package me.theinfamous1.dooteramigos.client;
 
-import net.minecraft.client.Minecraft;
+import me.theinfamous1.dooteramigos.DooterAmigos;
+import me.theinfamous1.dooteramigos.client.renderer.DooterSkeletonRenderer;
+import me.theinfamous1.dooteramigos.common.registry.DAEntityTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -15,6 +19,8 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
 @EventBusSubscriber(modid = DooterAmigos.MODID, value = Dist.CLIENT)
 public class DooterAmigosClient {
+    public static final ResourceLocation PINATA_TEXTURE_LOCATION = DooterAmigos.location("textures/entity/pinata.png");
+
     public DooterAmigosClient(ModContainer container) {
         // Allows NeoForge to create a config screen for this mod's configs.
         // The config screen is accessed by going to the Mods screen > clicking on your mod > clicking on config.
@@ -24,8 +30,10 @@ public class DooterAmigosClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
-        // Some client setup code
-        DooterAmigos.LOGGER.info("HELLO FROM CLIENT SETUP");
-        DooterAmigos.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+    }
+
+    @SubscribeEvent
+    static void onEntityRenderers(EntityRenderersEvent.RegisterRenderers event){
+        event.registerEntityRenderer(DAEntityTypes.DOOTER_SKELETON.get(), DooterSkeletonRenderer::new);
     }
 }

@@ -7,17 +7,22 @@ import me.theinfamous1.dooteramigos.common.registry.DAEntityTypes;
 import me.theinfamous1.dooteramigos.common.registry.DAMobEffects;
 import me.theinfamous1.dooteramigos.common.registry.DASoundEvents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.slf4j.Logger;
 
@@ -71,6 +76,7 @@ public class DooterAmigos {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onRegisterEntityAttributes);
+        modEventBus.addListener(this::onRegisterSpawnPlacements);
 
         // Register the Deferred Register to the mod event bus so items get registered
         ITEMS.register(modEventBus);
@@ -86,7 +92,7 @@ public class DooterAmigos {
         NeoForge.EVENT_BUS.register(this);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, DAConfig.SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -111,6 +117,37 @@ public class DooterAmigos {
                 LOGGER.info("Projectile {} was applying damage {}, now will apply damage {}", projectile, event.getOriginalAmount(), event.getAmount());
             }
         }
+    }
+
+    public static void spawnPinata(ServerLevel level, LevelChunk chunk) {
+        if (level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get() && level.isNight() && level.getRandom().nextInt(DAConfig.PINATA_SPAWN_CHANCE.getAsInt()) == 0) {
+            ChunkPos chunkpos = chunk.getPos();
+            BlockPos suitableSpawn = findSuitableSpawn(level, level.getBlockRandomPos(chunkpos.getMinBlockX(), 0, chunkpos.getMinBlockZ(), 15));
+
+            Pinata pinata = DAEntityTypes.PINATA.get().create(level);
+            if (pinata != null) {
+                pinata.setTrap(true);
+                pinata.setAge(0);
+                pinata.setPos(suitableSpawn.getX(), suitableSpawn.getY(), suitableSpawn.getZ());
+                level.addFreshEntity(pinata);
+                if(!FMLEnvironment.production){
+                    LOGGER.info("Spawned trapped {} at {}", pinata, suitableSpawn);
+                }
+            }
+        }
+    }
+
+    private static BlockPos findSuitableSpawn(ServerLevel serverLevel, BlockPos pos) {
+        BlockPos blockpos = serverLevel.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
+        if (blockpos.getY() == serverLevel.getMinBuildHeight() - 1) {
+            blockpos = blockpos.above(2);
+        }
+
+        return blockpos;
+    }
+
+    private void onRegisterSpawnPlacements(RegisterSpawnPlacementsEvent event){
+        event.register(DAEntityTypes.PINATA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Pinata::checkPinataSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
     private void onRegisterEntityAttributes(EntityAttributeCreationEvent event){

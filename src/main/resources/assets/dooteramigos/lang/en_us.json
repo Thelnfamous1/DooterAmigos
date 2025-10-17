@@ -13,6 +13,7 @@
   "dooteramigos.configuration.section.dooteramigos.common.toml": "Dooter Amigos Configs",
   "dooteramigos.configuration.section.dooteramigos.common.toml.title": "Dooter Amigos Configs",
   "dooteramigos.configuration.pinata_spawn_chance": "Pinata Spawn Chance",
+  "dooteramigos.configuration.pinata_spawn_chance.tooltip": "Chance to spawn a pinata at night in a chunk, in terms of on average once every X ticks",
 
   "subtitles.dooteramigos.entity.dooter_skeleton.trumpet": "Dooter Skeleton trumpets"
 }

@@ -1,9 +1,11 @@
 {
   "entity.dooteramigos.dooter_skeleton": "Dooter Skeleton",
+  "entity.dooteramigos.pinata": "Pinata",
 
   "itemGroup.dooteramigos": "Dooter Amigos",
   "item.dooteramigos.sombrero": "Sombrero",
   "item.dooteramigos.dooter_skeleton_spawn_egg": "Dooter Skeleton Spawn Egg",
+  "item.dooteramigos.pinata_spawn_egg": "Pinata Spawn Egg",
 
   "dooteramigos.configuration.title": "Dooter Amigos Configs",
   "dooteramigos.configuration.section.dooteramigos.common.toml": "Dooter Amigos Configs",

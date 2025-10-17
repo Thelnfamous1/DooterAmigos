@@ -1,9 +1,12 @@
 package me.theinfamous1.dooteramigos;
 
 import me.theinfamous1.dooteramigos.common.entity.DooterSkeleton;
+import me.theinfamous1.dooteramigos.common.entity.Pinata;
 import me.theinfamous1.dooteramigos.common.item.SombreroItem;
 import me.theinfamous1.dooteramigos.common.registry.DAEntityTypes;
+import net.minecraft.ChatFormatting;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.item.*;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -38,15 +41,17 @@ public class DooterAmigos {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final DeferredItem<SombreroItem> SOMBRERO = ITEMS.registerItem("sombrero", p -> new SombreroItem(ArmorMaterials.LEATHER, ArmorItem.Type.HELMET, p), new Item.Properties().stacksTo(1));
     public static final DeferredItem<SpawnEggItem> DOOTER_SKELETON_SPAWN_EGG = ITEMS.registerItem("dooter_skeleton_spawn_egg", p -> new DeferredSpawnEggItem(DAEntityTypes.DOOTER_SKELETON, 12698049, 4802889, new Item.Properties()));
+    public static final DeferredItem<SpawnEggItem> PINATA_SPAWN_EGG = ITEMS.registerItem("pinata_spawn_egg", p -> new DeferredSpawnEggItem(DAEntityTypes.PINATA, 12623485, 15656192, new Item.Properties()));
 
     // Creates a creative tab with the id "dooteramigos:example_tab" for the example item
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DOOTER_AMIGOS = CREATIVE_MODE_TABS.register("dooteramigos", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.dooteramigos")) //The language key for the title of your CreativeModeTab
             //.withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> SOMBRERO.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(SOMBRERO.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(DOOTER_SKELETON_SPAWN_EGG.get());
+                output.accept(PINATA_SPAWN_EGG.get());
             }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -85,5 +90,14 @@ public class DooterAmigos {
 
     private void onRegisterEntityAttributes(EntityAttributeCreationEvent event){
         event.put(DAEntityTypes.DOOTER_SKELETON.get(), DooterSkeleton.createAttributes().build());
+        event.put(DAEntityTypes.PINATA.get(), Pinata.createAttributes().build());
+    }
+
+    public static boolean isPinataNamed(AbstractHorse horse){
+        if (horse.hasCustomName()) {
+            String name = ChatFormatting.stripFormatting(horse.getName().getString());
+            return "Pinata".equals(name);
+        }
+        return false;
     }
 }

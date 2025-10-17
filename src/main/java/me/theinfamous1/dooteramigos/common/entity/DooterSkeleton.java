@@ -4,6 +4,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.level.Level;
@@ -24,7 +25,7 @@ public class DooterSkeleton extends AbstractSkeleton implements GeoEntity {
     }
 
     public static AttributeSupplier.Builder createAttributes(){
-        return Skeleton.createAttributes();
+        return Skeleton.createAttributes().add(Attributes.MAX_HEALTH, 30.0D);
     }
 
     @Override

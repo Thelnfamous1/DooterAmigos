@@ -1,0 +1,11 @@
+{
+  "entity.dooter_skeleton.trumpet": {
+    "subtitle": "subtitles.dooteramigos.entity.dooter_skeleton.trumpet",
+    "sounds": [
+      {
+        "name": "dooteramigos:dooter_skeleton_trumpet",
+        "stream": true
+      }
+    ]
+  }
+}

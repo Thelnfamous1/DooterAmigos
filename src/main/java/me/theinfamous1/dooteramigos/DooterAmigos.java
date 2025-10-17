@@ -4,12 +4,21 @@ import me.theinfamous1.dooteramigos.common.entity.DooterSkeleton;
 import me.theinfamous1.dooteramigos.common.entity.Pinata;
 import me.theinfamous1.dooteramigos.common.item.SombreroItem;
 import me.theinfamous1.dooteramigos.common.registry.DAEntityTypes;
+import me.theinfamous1.dooteramigos.common.registry.DAMobEffects;
+import me.theinfamous1.dooteramigos.common.registry.DASoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -27,6 +36,8 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.BiPredicate;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(DooterAmigos.MODID)
@@ -66,6 +77,8 @@ public class DooterAmigos {
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
         DAEntityTypes.ENTITY_TYPES.register(modEventBus);
+        DASoundEvents.SOUND_EVENTS.register(modEventBus);
+        DAMobEffects.MOB_EFFECTS.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (DooterAmigos) to respond directly to events.
@@ -88,6 +101,18 @@ public class DooterAmigos {
     public void onServerStarting(ServerStartingEvent event) {
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onDamage(LivingIncomingDamageEvent event){
+        Entity directDamagingEntity = event.getSource().getDirectEntity();
+        if(directDamagingEntity instanceof Projectile projectile && projectile.getOwner() instanceof LivingEntity shooter && shooter.hasEffect(DAMobEffects.DAMAGE_BOOST)){
+            double damageBoostLevel = shooter.getEffect(DAMobEffects.DAMAGE_BOOST).getAmplifier() + 1;
+            event.setAmount(event.getAmount() * (1.0F + (float)(damageBoostLevel * DAMobEffects.DAMAGE_BOOST_MULITPLIER_BASE)));
+            if(!FMLEnvironment.production){
+                LOGGER.info("Projectile {} was applying damage {}, now will apply damage {}", projectile, event.getOriginalAmount(), event.getAmount());
+            }
+        }
+    }
+
     private void onRegisterEntityAttributes(EntityAttributeCreationEvent event){
         event.put(DAEntityTypes.DOOTER_SKELETON.get(), DooterSkeleton.createAttributes().build());
         event.put(DAEntityTypes.PINATA.get(), Pinata.createAttributes().build());
@@ -99,5 +124,17 @@ public class DooterAmigos {
             return "Pinata".equals(name);
         }
         return false;
+    }
+
+    public static boolean isAlliedTo(LivingEntity self, LivingEntity other, BiPredicate<LivingEntity, LivingEntity> filter) {
+        if (self.isAlliedTo(other) || other.isAlliedTo(self) || isOwnedBy(self, other) || isOwnedBy(other, self)) {
+            return true;
+        } else {
+            return filter.test(self, other) && self.getTeam() == null && other.getTeam() == null;
+        }
+    }
+
+    private static boolean isOwnedBy(LivingEntity self, LivingEntity other) {
+        return self instanceof OwnableEntity ownableEntity && ownableEntity.getOwner() == other;
     }
 }

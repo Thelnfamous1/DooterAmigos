@@ -2,6 +2,8 @@
   "entity.dooteramigos.dooter_skeleton": "Dooter Skeleton",
   "entity.dooteramigos.pinata": "Pinata",
 
+  "mob_effect.dooteramigos.damage_boost": "Damage Boost",
+
   "itemGroup.dooteramigos": "Dooter Amigos",
   "item.dooteramigos.sombrero": "Sombrero",
   "item.dooteramigos.dooter_skeleton_spawn_egg": "Dooter Skeleton Spawn Egg",
@@ -10,5 +12,7 @@
   "dooteramigos.configuration.title": "Dooter Amigos Configs",
   "dooteramigos.configuration.section.dooteramigos.common.toml": "Dooter Amigos Configs",
   "dooteramigos.configuration.section.dooteramigos.common.toml.title": "Dooter Amigos Configs",
-  "dooteramigos.configuration.pinata_spawn_chance": "Pinata Spawn Chance"
+  "dooteramigos.configuration.pinata_spawn_chance": "Pinata Spawn Chance",
+
+  "subtitles.dooteramigos.entity.dooter_skeleton.trumpet": "Dooter Skeleton trumpets"
 }

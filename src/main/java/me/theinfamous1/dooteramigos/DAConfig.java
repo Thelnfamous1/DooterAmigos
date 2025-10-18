@@ -9,6 +9,6 @@ public class DAConfig {
 
     public static final ModConfigSpec.IntValue PINATA_SPAWN_CHANCE = BUILDER
             .comment("Chance to spawn a pinata at night in a chunk, in terms of on average once every X ticks")
-            .defineInRange("pinata_spawn_chance", 100000, 0, Integer.MAX_VALUE);
+            .defineInRange("pinata_spawn_chance", 1000000, 0, Integer.MAX_VALUE);
     static final ModConfigSpec SPEC = BUILDER.build();
 }

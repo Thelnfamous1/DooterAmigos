@@ -18,7 +18,6 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.fml.loading.FMLEnvironment;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -82,7 +81,6 @@ public class DooterSkeleton extends AbstractSkeleton implements GeoEntity {
     }
 
     public void playTrumpetSound() {
-        if(!FMLEnvironment.production) return; // TODO: Remove once sound file is fixed
         //float pitch = 0.7F + 0.4F * this.random.nextFloat();
         float volume = 0.8F + 0.2F * this.random.nextFloat();
         this.level().playLocalSound(this, DASoundEvents.DOOTER_SKELETON_TRUMPET.get(), this.getSoundSource(), volume, 1.0F);
